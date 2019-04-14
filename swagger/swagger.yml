@@ -1,0 +1,504 @@
+swagger: "2.0"
+info:
+  title: Zig Cloud API
+  description: Manage IaaS Resources
+  version: 1.0.0
+  termsOfService: http://zhigui.com
+  contact:
+    email: fanjiahe@zhigui.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+basePath: /v1
+paths:
+  /alicloud/instance/delete/{instanceId}:
+    get:
+      tags:
+      - alicloud
+      description: Release a PostPaid instance or an expiring PrePaid instance
+      operationId: CloudController.DeleteInstance
+      parameters:
+      - in: path
+        name: instanceId
+        description: The instanceId for delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/commons.DeleteInstanceResponse'
+        "403":
+          description: ""
+  /alicloud/instance/stop/{instanceId}:
+    get:
+      tags:
+      - alicloud
+      description: Stop an running instance
+      operationId: CloudController.StopInstance
+      parameters:
+      - in: path
+        name: instanceId
+        description: The instanceId for stop
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/commons.StopInstanceResponse'
+        "403":
+          description: ""
+  /alicloud/instances:
+    get:
+      tags:
+      - alicloud
+      description: Query for details of one or more instances
+      operationId: CloudController.DescribeInstances
+      parameters:
+      - in: query
+        name: regionId
+        description: The regionId for instances
+        required: true
+        type: string
+      - in: query
+        name: instanceIds
+        description: The instanceIds for query
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/commons.DescribeInstancesResponse'
+        "403":
+          description: ""
+    post:
+      tags:
+      - alicloud
+      description: run instances
+      operationId: CloudController.RunInstances
+      parameters:
+      - in: body
+        name: body
+        description: body content
+        required: true
+        schema:
+          $ref: '#/definitions/commons.RunInstancesRequest'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/commons.RunInstancesResponse'
+        "403":
+          description: ""
+  /alicloud/regions:
+    get:
+      tags:
+      - alicloud
+      description: Query available regions
+      operationId: CloudController.DescribeRegions
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: ""
+  /alicloud/securitygroup:
+    post:
+      tags:
+      - alicloud
+      description: create SecurityGroup
+      operationId: CloudController.CreateSecurityGroup
+      parameters:
+      - in: body
+        name: body
+        description: body content
+        required: true
+        schema:
+          $ref: '#/definitions/commons.CreateSecurityGroupRequest'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/commons.CreateSecurityGroupResponse'
+        "403":
+          description: ""
+  /alicloud/securitygroup/ingress-rule:
+    post:
+      tags:
+      - alicloud
+      description: Add a security group entry direction rule
+      operationId: CloudController.AuthorizeSecurityGroup
+      parameters:
+      - in: body
+        name: body
+        description: body content
+        required: true
+        schema:
+          $ref: '#/definitions/commons.AuthorizeSecurityGroupRequest'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/commons.AuthorizeSecurityGroupResponse'
+        "403":
+          description: ""
+  /alicloud/vpc:
+    post:
+      tags:
+      - alicloud
+      description: create VPC
+      operationId: CloudController.CreateVPC
+      parameters:
+      - in: body
+        name: body
+        description: body content
+        required: true
+        schema:
+          $ref: '#/definitions/commons.CreateVpcRequest'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/commons.CreateVpcResponse'
+        "403":
+          description: ""
+  /alicloud/vswitch:
+    post:
+      tags:
+      - alicloud
+      description: create VSwitch
+      operationId: CloudController.CreateVSwitch
+      parameters:
+      - in: body
+        name: body
+        description: body content
+        required: true
+        schema:
+          $ref: '#/definitions/commons.CreateVSwitchRequest'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/commons.CreateVSwitchResponse'
+        "403":
+          description: ""
+  /alicloud/zones:
+    get:
+      tags:
+      - alicloud
+      description: Query the available zones for the specified region
+      operationId: CloudController.DescribeZones
+      parameters:
+      - in: query
+        name: regionId
+        description: The regionId for zones
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/commons.DescribeZonesResponse'
+        "403":
+          description: ""
+  /user/:
+    get:
+      tags:
+      - user
+      description: get all Users
+      operationId: UserController.GetAll
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.User'
+    post:
+      tags:
+      - user
+      description: create users
+      operationId: UserController.CreateUser
+      parameters:
+      - in: body
+        name: body
+        description: body for user content
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      responses:
+        "200":
+          description: '{int} models.User.Id'
+        "403":
+          description: body is empty
+  /user/{id}:
+    get:
+      tags:
+      - user
+      description: get user by uid
+      operationId: UserController.Get
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.User'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - user
+      description: update the user
+      operationId: UserController.Update
+      parameters:
+      - in: path
+        name: id
+        description: The uid you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for user content
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.User'
+        "403":
+          description: :id is not int
+  /user/{uid}:
+    delete:
+      tags:
+      - user
+      description: delete the user
+      operationId: UserController.Delete
+      parameters:
+      - in: path
+        name: uid
+        description: The uid you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: uid is empty
+  /user/login:
+    get:
+      tags:
+      - user
+      description: Logs user into the system
+      operationId: UserController.Login
+      parameters:
+      - in: query
+        name: username
+        description: The username for login
+        required: true
+        type: string
+      - in: query
+        name: password
+        description: The password for login
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} login success'
+        "403":
+          description: user not exist
+  /user/logout:
+    get:
+      tags:
+      - user
+      description: Logs out current logged in user session
+      operationId: UserController.logout
+      responses:
+        "200":
+          description: '{string} logout success'
+definitions:
+  commons.AuthorizeSecurityGroupRequest:
+    title: AuthorizeSecurityGroupRequest
+    type: object
+    properties:
+      IpProtocol:
+        type: string
+      PortRange:
+        type: string
+      RegionId:
+        type: string
+      SecurityGroupId:
+        type: string
+  commons.AuthorizeSecurityGroupResponse:
+    title: AuthorizeSecurityGroupResponse
+    type: object
+    properties:
+      RequestId:
+        type: string
+  commons.CreateSecurityGroupRequest:
+    title: CreateSecurityGroupRequest
+    type: object
+    properties:
+      RegionId:
+        type: string
+      SecurityGroupName:
+        type: string
+      VpcId:
+        type: string
+  commons.CreateSecurityGroupResponse:
+    title: CreateSecurityGroupResponse
+    type: object
+    properties:
+      SecurityGroupId:
+        type: string
+  commons.CreateVSwitchRequest:
+    title: CreateVSwitchRequest
+    type: object
+    properties:
+      CidrBlock:
+        type: string
+      RegionId:
+        type: string
+      VSwitchName:
+        type: string
+      VpcId:
+        type: string
+      ZoneId:
+        type: string
+  commons.CreateVSwitchResponse:
+    title: CreateVSwitchResponse
+    type: object
+    properties:
+      VSwitchId:
+        type: string
+  commons.CreateVpcRequest:
+    title: CreateVpcRequest
+    type: object
+    properties:
+      CidrBlock:
+        type: string
+      RegionId:
+        type: string
+      VpcName:
+        type: string
+  commons.CreateVpcResponse:
+    title: CreateVpcResponse
+    type: object
+    properties:
+      VpcId:
+        type: string
+  commons.DeleteInstanceResponse:
+    title: DeleteInstanceResponse
+    type: object
+    properties:
+      RequestId:
+        type: string
+  commons.DescribeInstancesResponse:
+    title: DescribeInstancesResponse
+    type: object
+    properties:
+      Instances:
+        type: array
+        items:
+          $ref: '#/definitions/commons.Instance'
+  commons.DescribeZonesResponse:
+    title: DescribeZonesResponse
+    type: object
+    properties:
+      LocalName:
+        type: string
+      ZoneId:
+        type: string
+  commons.Instance:
+    title: Instance
+    type: object
+    properties:
+      CreationTime:
+        type: string
+      HostName:
+        type: string
+      InstanceId:
+        type: string
+      InstanceName:
+        type: string
+      InstanceType:
+        type: string
+      PublicIpAddress:
+        type: array
+        items:
+          type: string
+      SecurityGroupIds:
+        type: array
+        items:
+          type: string
+      Status:
+        type: string
+  commons.RunInstancesRequest:
+    title: RunInstancesRequest
+    type: object
+    properties:
+      Amount:
+        type: integer
+        format: int64
+      HostName:
+        type: string
+      ImageId:
+        type: string
+      InstanceChargeType:
+        type: string
+      InstanceType:
+        type: string
+      Password:
+        type: string
+      Period:
+        type: string
+      PeriodUnit:
+        type: string
+      RegionId:
+        type: string
+      SecurityGroupId:
+        type: string
+      TagKey:
+        type: string
+      TagValue:
+        type: string
+      VSwitchId:
+        type: string
+      ZoneId:
+        type: string
+  commons.RunInstancesResponse:
+    title: RunInstancesResponse
+    type: object
+    properties:
+      Instances:
+        type: array
+        items:
+          $ref: '#/definitions/commons.Instance'
+  commons.StopInstanceResponse:
+    title: StopInstanceResponse
+    type: object
+    properties:
+      RequestId:
+        type: string
+  models.User:
+    title: User
+    type: object
+    properties:
+      Id:
+        type: integer
+        format: int64
+      Password:
+        type: string
+      Username:
+        type: string
+tags:
+- name: user
+  description: |
+    Operations about Users
