@@ -1,4 +1,4 @@
-package helm // import "k8s.io/helm/cmd/helm"
+package helm
 
 import (
 	"fmt"

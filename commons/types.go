@@ -12,7 +12,9 @@ type ListReleasesRequest struct {
 }
 
 type GetReleaseRequest struct {
+	ReleaseName string
 }
 
 type DeleteReleaseRequest struct {
+	ReleaseName string
 }

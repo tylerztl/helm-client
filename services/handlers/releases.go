@@ -6,45 +6,32 @@ import (
 	rls "k8s.io/helm/pkg/proto/hapi/services"
 	"strings"
 	"zig-helm/commons"
+	helm_client "zig-helm/services/helm"
 )
 
+type HelmHandler struct {
+	HelmClient helm.Interface
+}
+
+func NewHelmHandler() *HelmHandler {
+	return &HelmHandler{
+		HelmClient: helm_client.GetClient(),
+	}
+}
+
 // ListReleases returns the list of helm releases
-//func (h *HelmHandler) ListReleases(request *commons.ListReleasesRequest) (*rls.ListReleasesResponse, error) {
-//	stats := []release.Status_Code{
-//		release.Status_DEPLOYED,
-//	}
-//	resp, err := h.HelmClient.ListReleases(
-//		helm.ReleaseListFilter(""),
-//		helm.ReleaseListSort(int32(services.ListSort_LAST_RELEASED)),
-//		helm.ReleaseListOrder(int32(services.ListSort_DESC)),
-//		helm.ReleaseListStatuses(stats),
-//	)
-//
-//	if err != nil {
-//		log.WithError(err).Error("Can't retrieve the list of releases")
-//		return nil, err
-//	}
-//
-//	return resp, err
-//}
-//
-//// GetRelease gets the information of an existing release
-//func (h *HelmHandler) GetRelease(request *commons.GetReleaseRequest) (*rls.GetReleaseContentResponse, error) {
-//	// TODO, find a way to retrieve all the information in a single call
-//	// We get the information about the release
-//	release, err := client.ReleaseContent(releaseName)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	// Now we populate the resources string
-//	status, err := client.ReleaseStatus(releaseName)
-//	if err != nil {
-//		return nil, err
-//	}
-//	release.Release.Info = status.Info
-//	return release, err
-//}
+func (h *HelmHandler) ListReleases() (*rls.ListReleasesResponse, error) {
+	return h.HelmClient.ListReleases(
+		helm.ReleaseListFilter(""),
+		helm.ReleaseListSort(int32(rls.ListSort_LAST_RELEASED)),
+		helm.ReleaseListOrder(int32(rls.ListSort_DESC)),
+	)
+}
+
+// GetRelease gets the information of an existing release
+func (h *HelmHandler) GetRelease(request *commons.GetReleaseRequest) (*rls.GetReleaseContentResponse, error) {
+	return h.HelmClient.ReleaseContent(request.ReleaseName)
+}
 
 // InstallRelease wraps helms client installReleae method
 func (h *HelmHandler) InstallRelease(request *commons.InstallReleaseRequest) (*rls.InstallReleaseResponse, error) {
@@ -76,11 +63,11 @@ func (h *HelmHandler) InstallRelease(request *commons.InstallReleaseRequest) (*r
 }
 
 // DeleteRelease deletes an existing helm chart
-//func (h *HelmHandler) DeleteRelease(request *commons.DeleteReleaseRequest) (*rls.UninstallReleaseResponse, error) {
-//	opts := []helm.DeleteOption{
-//		helm.DeleteDryRun(false),
-//		helm.DeletePurge(false),
-//		helm.DeleteTimeout(300),
-//	}
-//	return client.DeleteRelease(releaseName, opts...)
-//}
+func (h *HelmHandler) DeleteRelease(request *commons.DeleteReleaseRequest) (*rls.UninstallReleaseResponse, error) {
+	opts := []helm.DeleteOption{
+		helm.DeleteDryRun(false),
+		helm.DeletePurge(false),
+		helm.DeleteTimeout(300),
+	}
+	return h.HelmClient.DeleteRelease(request.ReleaseName, opts...)
+}
