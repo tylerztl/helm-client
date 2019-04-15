@@ -2606,6 +2606,12 @@
 			"revisionTime": "2019-04-12T09:39:11Z"
 		},
 		{
+			"checksumSHA1": "YD/Z6mlPnXmHW2YynOQ1JKmN4wE=",
+			"path": "k8s.io/helm/pkg/timeconv",
+			"revision": "8494d133bf1847e246205b005433972c7630c5a9",
+			"revisionTime": "2019-04-12T09:39:11Z"
+		},
+		{
 			"checksumSHA1": "EZwfOtWgxBl/Yf4c8kQvsRFzRIo=",
 			"path": "k8s.io/helm/pkg/tlsutil",
 			"revision": "8494d133bf1847e246205b005433972c7630c5a9",
