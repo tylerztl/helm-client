@@ -12,6 +12,25 @@ type ReleaseController struct {
 	beego.Controller
 }
 
+// @Title List
+// @Description list all releases
+// @Success 200 {object} commons.ListResult
+// @router / [get]
+func (r *ReleaseController) List() {
+	listResult, err := r.HelmClient.ListReleases()
+
+	if err == nil {
+		if listResult == nil {
+			r.CustomAbort(403, "Not found releases")
+		} else {
+			r.Data["json"] = listResult
+			r.ServeJSON()
+		}
+	} else {
+		r.CustomAbort(403, err.Error())
+	}
+}
+
 // @Title Install
 // @Description install release
 // @Param	body	body 	commons.InstallReleaseRequest	true 	"body content"

@@ -3,6 +3,8 @@ package commons
 import (
 	"errors"
 	"fmt"
+	"k8s.io/helm/pkg/proto/hapi/release"
+	"k8s.io/helm/pkg/timeconv"
 	"os"
 	"path/filepath"
 	"strings"
@@ -158,4 +160,55 @@ func removeRepoCache(name string, home helmpath.Home) error {
 		}
 	}
 	return nil
+}
+
+// filterList returns a list scrubbed of old releases.
+func FilterList(rels []*release.Release) []*release.Release {
+	idx := map[string]int32{}
+
+	for _, r := range rels {
+		name, version := r.GetName(), r.GetVersion()
+		if max, ok := idx[name]; ok {
+			// check if we have a greater version already
+			if max > version {
+				continue
+			}
+		}
+		idx[name] = version
+	}
+
+	uniq := make([]*release.Release, 0, len(idx))
+	for _, r := range rels {
+		if idx[r.GetName()] == r.GetVersion() {
+			uniq = append(uniq, r)
+		}
+	}
+	return uniq
+}
+
+func GetListResult(rels []*release.Release, next string) *ListResult {
+	listReleases := []ListRelease{}
+	for _, r := range rels {
+		md := r.GetChart().GetMetadata()
+		t := "-"
+		if tspb := r.GetInfo().GetLastDeployed(); tspb != nil {
+			t = timeconv.String(tspb)
+		}
+
+		lr := ListRelease{
+			Name:       r.GetName(),
+			Revision:   r.GetVersion(),
+			Updated:    t,
+			Status:     r.GetInfo().GetStatus().GetCode().String(),
+			Chart:      fmt.Sprintf("%s-%s", md.GetName(), md.GetVersion()),
+			AppVersion: md.GetAppVersion(),
+			Namespace:  r.GetNamespace(),
+		}
+		listReleases = append(listReleases, lr)
+	}
+
+	return &ListResult{
+		Releases: listReleases,
+		Next:     next,
+	}
 }

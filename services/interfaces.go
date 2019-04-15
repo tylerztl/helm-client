@@ -8,7 +8,7 @@ import (
 
 // Client is an interface for managing Helm Chart releases
 type Release interface {
-	ListReleases() (*rls.ListReleasesResponse, error)
+	ListReleases() (*commons.ListResult, error)
 	InstallRelease(*commons.InstallReleaseRequest) (*rls.InstallReleaseResponse, error)
 	GetRelease(*commons.GetReleaseRequest) (*rls.GetReleaseContentResponse, error)
 	DeleteRelease(*commons.DeleteReleaseRequest) (*rls.UninstallReleaseResponse, error)

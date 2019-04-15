@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"k8s.io/helm/pkg/helm"
+	"k8s.io/helm/pkg/proto/hapi/release"
 	rls "k8s.io/helm/pkg/proto/hapi/services"
 	"strings"
 	"zig-helm/commons"
@@ -20,12 +21,35 @@ func NewReleaseHandler() *ReleaseHandler {
 }
 
 // ListReleases returns the list of helm releases
-func (h *ReleaseHandler) ListReleases() (*rls.ListReleasesResponse, error) {
-	return h.HelmClient.ListReleases(
+func (h *ReleaseHandler) ListReleases() (*commons.ListResult, error) {
+	res, err := h.HelmClient.ListReleases(
+		helm.ReleaseListLimit(256),
+		helm.ReleaseListOffset(""),
 		helm.ReleaseListFilter(""),
 		helm.ReleaseListSort(int32(rls.ListSort_LAST_RELEASED)),
 		helm.ReleaseListOrder(int32(rls.ListSort_DESC)),
+		helm.ReleaseListStatuses([]release.Status_Code{
+			release.Status_UNKNOWN,
+			release.Status_DEPLOYED,
+			release.Status_DELETED,
+			release.Status_DELETING,
+			release.Status_FAILED,
+			release.Status_PENDING_INSTALL,
+			release.Status_PENDING_UPGRADE,
+			release.Status_PENDING_ROLLBACK,
+		}),
+		helm.ReleaseListNamespace(""),
 	)
+	if err != nil {
+		return nil, err
+	}
+	if res == nil {
+		return nil, nil
+	}
+
+	rels := commons.FilterList(res.GetReleases())
+
+	return commons.GetListResult(rels, res.Next), nil
 }
 
 // GetRelease gets the information of an existing release

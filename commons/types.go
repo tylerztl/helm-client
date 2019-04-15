@@ -29,6 +29,21 @@ type AddRepoRequest struct {
 	Noupdate bool   `json:"noupdate"`
 }
 
+type ListResult struct {
+	Next     string
+	Releases []ListRelease
+}
+
+type ListRelease struct {
+	Name       string
+	Revision   int32
+	Updated    string
+	Status     string
+	Chart      string
+	AppVersion string
+	Namespace  string
+}
+
 type ListReposResponse struct {
 	Repo []*repo.Entry
 }
