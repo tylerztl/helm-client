@@ -48,6 +48,6 @@ func (r *RepoHandler) AddRepo(request *commons.AddRepoRequest) error {
 }
 
 // DeleteRepo deletes a repo from the list of enabled repositories to index
-func (r *RepoHandler) RemoveRepo(request *commons.RemoveRepoRequest) error {
-	return commons.RemoveRepoLine(request.Name, commons.GetConfig().Home)
+func (r *RepoHandler) RemoveRepo(repo string) error {
+	return commons.RemoveRepoLine(repo, commons.GetConfig().Home)
 }

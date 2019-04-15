@@ -37,19 +37,18 @@ func (r *RepoController) Add() {
 
 // @Title Remove
 // @Description remove repo
-// @Param	body	body 	commons.RemoveRepoRequest	true 	"body content"
+// @@Param	repo   path 	string	true	"The repo you want to delete"
 // @Success 200 {string}  Repo has been removed from your repositories
 // @Failure 403
-// @router / [delete]
+// @router /:repo [delete]
 func (r *RepoController) Remove() {
-	removeRepoRequest := new(commons.RemoveRepoRequest)
-	err := json.Unmarshal(r.Ctx.Input.RequestBody, removeRepoRequest)
-	if nil != err {
-		r.CustomAbort(403, err.Error())
+	repo := r.GetString(":repo")
+	if repo == "" {
+		r.CustomAbort(403, "Repo name must be provide")
 	}
-	err = r.HelmClient.RemoveRepo(removeRepoRequest)
+	err := r.HelmClient.RemoveRepo(repo)
 	if err == nil {
-		r.Data["json"] = fmt.Sprintf("%q has been removed from your repositories", removeRepoRequest.Name)
+		r.Data["json"] = fmt.Sprintf("%q has been removed from your repositories", repo)
 		r.ServeJSON()
 	} else {
 		r.CustomAbort(403, err.Error())
@@ -58,8 +57,7 @@ func (r *RepoController) Remove() {
 
 // @Title List
 // @Description list all repo
-// @Param	body	body 	commons.ListReposRequest	true 	"body content"
-// @Success 200 {object} commons.InstallReleaseResponse
+// @Success 200 {object}  commons.ListReposResponse, error)
 // @Failure 403
 // @router / [get]
 func (r *RepoController) List() {

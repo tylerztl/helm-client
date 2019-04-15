@@ -17,7 +17,7 @@ type ReleaseController struct {
 // @Param	body	body 	commons.InstallReleaseRequest	true 	"body content"
 // @Success 200 {object} commons.InstallReleaseResponse
 // @Failure 403
-// @router /vpc [post]
+// @router / [post]
 func (r *ReleaseController) Install() {
 	installReleaseRequest := new(commons.InstallReleaseRequest)
 	err := json.Unmarshal(r.Ctx.Input.RequestBody, installReleaseRequest)

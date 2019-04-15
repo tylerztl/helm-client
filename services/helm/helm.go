@@ -27,9 +27,9 @@ func init() {
 		panic("Failed to connect tiller server")
 	}
 	helmClient = newClient()
-	if err := helmClient.PingTiller(); err != nil {
-		panic(fmt.Sprintf("could not ping Tiller: %s", err))
-	}
+	//if err := helmClient.PingTiller(); err != nil {
+	//	panic(fmt.Sprintf("could not ping Tiller: %s", err))
+	//}
 }
 
 func GetClient() helm.Interface {

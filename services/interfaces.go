@@ -16,6 +16,6 @@ type Release interface {
 
 type Repo interface {
 	AddRepo(*commons.AddRepoRequest) error
-	RemoveRepo(*commons.RemoveRepoRequest) error
+	RemoveRepo(repo string) error
 	ListRepos() (*commons.ListReposResponse, error)
 }

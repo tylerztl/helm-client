@@ -19,18 +19,14 @@ type DeleteReleaseRequest struct {
 }
 
 type AddRepoRequest struct {
-	Name     string `json:"name" valid:"alpha,required"`
-	Url      string `json:"url" valid:"url,required"`
+	Name     string `json:"name"`
+	Url      string `json:"url"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 	CertFile string `json:"certFile"`
 	KeyFile  string `json:"keyFile"`
 	CaFile   string `json:"caFile"`
 	Noupdate bool   `json:"noupdate"`
-}
-
-type RemoveRepoRequest struct {
-	Name string `json:"name" valid:"alpha,required"`
 }
 
 type ListReposResponse struct {
