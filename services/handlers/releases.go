@@ -1,11 +1,12 @@
 package handlers
 
 import (
+	"zig-helm/commons"
+	helm_client "zig-helm/services/helm"
+
 	"k8s.io/helm/pkg/helm"
 	"k8s.io/helm/pkg/proto/hapi/release"
 	rls "k8s.io/helm/pkg/proto/hapi/services"
-	"zig-helm/commons"
-	helm_client "zig-helm/services/helm"
 )
 
 type ReleaseHandler struct {
@@ -51,8 +52,12 @@ func (h *ReleaseHandler) ListReleases() (*commons.ListResult, error) {
 }
 
 // GetRelease gets the information of an existing release
-func (h *ReleaseHandler) GetRelease(request *commons.GetReleaseRequest) (*rls.GetReleaseContentResponse, error) {
-	return h.HelmClient.ReleaseContent(request.ReleaseName)
+func (h *ReleaseHandler) GetRelease(releaseName string) (*commons.ReleaseExtended, error) {
+	res, err := h.HelmClient.ReleaseContent(releaseName)
+	if err != nil {
+		return nil, err
+	}
+	return commons.MakeReleaseExtendedResource(res.Release), nil
 }
 
 // InstallRelease wraps helms client installReleae method
@@ -83,11 +88,13 @@ func (h *ReleaseHandler) InstallRelease(request *commons.InstallReleaseRequest) 
 }
 
 // DeleteRelease deletes an existing helm chart
-func (h *ReleaseHandler) DeleteRelease(request *commons.DeleteReleaseRequest) (*rls.UninstallReleaseResponse, error) {
+func (h *ReleaseHandler) DeleteRelease(releaseName string) (*rls.UninstallReleaseResponse, error) {
 	opts := []helm.DeleteOption{
 		helm.DeleteDryRun(false),
+		helm.DeleteDisableHooks(false),
 		helm.DeletePurge(false),
 		helm.DeleteTimeout(300),
+		helm.DeleteDescription(""),
 	}
-	return h.HelmClient.DeleteRelease(request.ReleaseName, opts...)
+	return h.HelmClient.DeleteRelease(releaseName, opts...)
 }

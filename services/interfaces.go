@@ -10,8 +10,8 @@ import (
 type Release interface {
 	ListReleases() (*commons.ListResult, error)
 	InstallRelease(*commons.InstallReleaseRequest) (*commons.ReleaseResource, error)
-	GetRelease(*commons.GetReleaseRequest) (*rls.GetReleaseContentResponse, error)
-	DeleteRelease(*commons.DeleteReleaseRequest) (*rls.UninstallReleaseResponse, error)
+	GetRelease(release string) (*commons.ReleaseExtended, error)
+	DeleteRelease(release string) (*rls.UninstallReleaseResponse, error)
 }
 
 type Repo interface {

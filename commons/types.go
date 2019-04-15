@@ -14,14 +14,6 @@ type InstallReleaseRequest struct {
 	Verify       bool   `json:"verify"`
 }
 
-type GetReleaseRequest struct {
-	ReleaseName string
-}
-
-type DeleteReleaseRequest struct {
-	ReleaseName string
-}
-
 type AddRepoRequest struct {
 	Name     string `json:"name"`
 	Url      string `json:"url"`
@@ -58,6 +50,18 @@ type ReleaseResource struct {
 	ChartVersion string `json:"chartVersion"`
 	Name         string `json:"name"`
 	Namespace    string `json:"namespace"`
+	Status       string `json:"status"`
+	Updated      string `json:"updated"`
+}
+
+type ReleaseExtended struct {
+	ChartIcon    string `json:"chartIcon"`
+	ChartName    string `json:"chartName"`
+	ChartVersion string `json:"chartVersion"`
+	Name         string `json:"name"`
+	Namespace    string `json:"namespace"`
+	Notes        string `json:"notes"`
+	Resources    string `json:"resources"`
 	Status       string `json:"status"`
 	Updated      string `json:"updated"`
 }

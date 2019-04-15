@@ -31,7 +31,7 @@ import (
 //
 // If 'verify' is true, this will attempt to also verify the chart.
 func LocateChartPath(repoURL, username, password, name, version string, verify bool, keyring,
-certFile, keyFile, caFile string) (string, error) {
+	certFile, keyFile, caFile string) (string, error) {
 	name = strings.TrimSpace(name)
 	version = strings.TrimSpace(version)
 	if fi, err := os.Stat(name); err == nil {
@@ -234,5 +234,22 @@ func MakeReleaseResource(release *release.Release) *ReleaseResource {
 		Name:         release.Name,
 		Namespace:    release.Namespace,
 		Status:       release.Info.Status.Code.String(),
+	}
+}
+
+func MakeReleaseExtendedResource(release *release.Release) *ReleaseExtended {
+	if release == nil {
+		return nil
+	}
+	return &ReleaseExtended{
+		ChartName:    release.Chart.Metadata.Name,
+		ChartVersion: release.Chart.Metadata.Version,
+		ChartIcon:    release.Chart.Metadata.Icon,
+		Updated:      timeconv.String(release.Info.LastDeployed),
+		Name:         release.Name,
+		Namespace:    release.Namespace,
+		Status:       release.Info.Status.Code.String(),
+		Resources:    release.Info.Status.Resources,
+		Notes:        release.Info.Status.Notes,
 	}
 }
