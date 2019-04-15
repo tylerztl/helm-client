@@ -8,7 +8,7 @@ import (
 )
 
 type ReleaseController struct {
-	HelmClient services.Client
+	HelmClient services.Release
 	beego.Controller
 }
 

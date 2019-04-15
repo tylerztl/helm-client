@@ -9,18 +9,18 @@ import (
 	helm_client "zig-helm/services/helm"
 )
 
-type HelmHandler struct {
+type ReleaseHandler struct {
 	HelmClient helm.Interface
 }
 
-func NewHelmHandler() *HelmHandler {
-	return &HelmHandler{
+func NewReleaseHandler() *ReleaseHandler {
+	return &ReleaseHandler{
 		HelmClient: helm_client.GetClient(),
 	}
 }
 
 // ListReleases returns the list of helm releases
-func (h *HelmHandler) ListReleases() (*rls.ListReleasesResponse, error) {
+func (h *ReleaseHandler) ListReleases() (*rls.ListReleasesResponse, error) {
 	return h.HelmClient.ListReleases(
 		helm.ReleaseListFilter(""),
 		helm.ReleaseListSort(int32(rls.ListSort_LAST_RELEASED)),
@@ -29,12 +29,12 @@ func (h *HelmHandler) ListReleases() (*rls.ListReleasesResponse, error) {
 }
 
 // GetRelease gets the information of an existing release
-func (h *HelmHandler) GetRelease(request *commons.GetReleaseRequest) (*rls.GetReleaseContentResponse, error) {
+func (h *ReleaseHandler) GetRelease(request *commons.GetReleaseRequest) (*rls.GetReleaseContentResponse, error) {
 	return h.HelmClient.ReleaseContent(request.ReleaseName)
 }
 
 // InstallRelease wraps helms client installReleae method
-func (h *HelmHandler) InstallRelease(request *commons.InstallReleaseRequest) (*rls.InstallReleaseResponse, error) {
+func (h *ReleaseHandler) InstallRelease(request *commons.InstallReleaseRequest) (*rls.InstallReleaseResponse, error) {
 
 	idSplit := strings.Split(request.ChartID, "/")
 	if len(idSplit) != 2 || idSplit[0] == "" || idSplit[1] == "" {
@@ -63,7 +63,7 @@ func (h *HelmHandler) InstallRelease(request *commons.InstallReleaseRequest) (*r
 }
 
 // DeleteRelease deletes an existing helm chart
-func (h *HelmHandler) DeleteRelease(request *commons.DeleteReleaseRequest) (*rls.UninstallReleaseResponse, error) {
+func (h *ReleaseHandler) DeleteRelease(request *commons.DeleteReleaseRequest) (*rls.UninstallReleaseResponse, error) {
 	opts := []helm.DeleteOption{
 		helm.DeleteDryRun(false),
 		helm.DeletePurge(false),

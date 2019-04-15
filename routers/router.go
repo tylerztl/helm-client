@@ -23,7 +23,12 @@ func init() {
 		),
 		beego.NSNamespace("/releases",
 			beego.NSInclude(
-				&controllers.ReleaseController{HelmClient: handlers.NewHelmHandler()},
+				&controllers.ReleaseController{HelmClient: handlers.NewReleaseHandler()},
+			),
+		),
+		beego.NSNamespace("/repos",
+			beego.NSInclude(
+				&controllers.RepoController{HelmClient: handlers.NewRepoHandler()},
 			),
 		),
 	)

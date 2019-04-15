@@ -10,6 +10,7 @@ import (
 	"github.com/prometheus/common/log"
 	"k8s.io/helm/pkg/downloader"
 	"k8s.io/helm/pkg/getter"
+	"k8s.io/helm/pkg/helm/helmpath"
 	"k8s.io/helm/pkg/repo"
 )
 
@@ -88,4 +89,73 @@ certFile, keyFile, caFile string) (string, error) {
 	}
 
 	return filename, fmt.Errorf("failed to download %q (hint: running `helm repo update` may help)", name)
+}
+
+func AddRepository(name, url, username, password string, home helmpath.Home, certFile, keyFile, caFile string, noUpdate bool) error {
+	f, err := repo.LoadRepositoriesFile(home.RepositoryFile())
+	if err != nil {
+		return err
+	}
+
+	if noUpdate && f.Has(name) {
+		return fmt.Errorf("repository name (%s) already exists, please specify a different name", name)
+	}
+
+	cif := home.CacheIndex(name)
+	c := repo.Entry{
+		Name:     name,
+		Cache:    cif,
+		URL:      url,
+		Username: username,
+		Password: password,
+		CertFile: certFile,
+		KeyFile:  keyFile,
+		CAFile:   caFile,
+	}
+
+	r, err := repo.NewChartRepository(&c, getter.All(GetConfig()))
+	if err != nil {
+		return err
+	}
+
+	if err := r.DownloadIndexFile(home.Cache()); err != nil {
+		return fmt.Errorf("Looks like %q is not a valid chart repository or cannot be reached: %s", url, err.Error())
+	}
+
+	f.Update(&c)
+
+	return f.WriteFile(home.RepositoryFile(), 0644)
+}
+
+func RemoveRepoLine(name string, home helmpath.Home) error {
+	repoFile := home.RepositoryFile()
+	r, err := repo.LoadRepositoriesFile(repoFile)
+	if err != nil {
+		return err
+	}
+
+	if !r.Remove(name) {
+		return fmt.Errorf("no repo named %q found", name)
+	}
+	if err := r.WriteFile(repoFile, 0644); err != nil {
+		return err
+	}
+
+	if err := removeRepoCache(name, home); err != nil {
+		return err
+	}
+
+	fmt.Printf("%q has been removed from your repositories\n", name)
+
+	return nil
+}
+
+func removeRepoCache(name string, home helmpath.Home) error {
+	if _, err := os.Stat(home.CacheIndex(name)); err == nil {
+		err = os.Remove(home.CacheIndex(name))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
