@@ -57,7 +57,7 @@ func (r *RepoController) Remove() {
 
 // @Title List
 // @Description list all repo
-// @Success 200 {object}  commons.ListReposResponse, error)
+// @Success 200 {object}  commons.ListReposResponse
 // @Failure 403
 // @router / [get]
 func (r *RepoController) List() {

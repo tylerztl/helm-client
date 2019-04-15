@@ -1,11 +1,9 @@
 package handlers
 
 import (
-	"fmt"
 	"k8s.io/helm/pkg/helm"
 	"k8s.io/helm/pkg/proto/hapi/release"
 	rls "k8s.io/helm/pkg/proto/hapi/services"
-	"strings"
 	"zig-helm/commons"
 	helm_client "zig-helm/services/helm"
 )
@@ -58,32 +56,30 @@ func (h *ReleaseHandler) GetRelease(request *commons.GetReleaseRequest) (*rls.Ge
 }
 
 // InstallRelease wraps helms client installReleae method
-func (h *ReleaseHandler) InstallRelease(request *commons.InstallReleaseRequest) (*rls.InstallReleaseResponse, error) {
-
-	idSplit := strings.Split(request.ChartID, "/")
-	if len(idSplit) != 2 || idSplit[0] == "" || idSplit[1] == "" {
-		return nil, fmt.Errorf("chartId must include the repository name. i.e: stable/wordpress")
-	}
-
-	// Search chart package and get local path
-	repo, chartName := idSplit[0], idSplit[1]
-
-	chartPath, err := commons.LocateChartPath(repo, "", "", chartName, request.ChartVersion, true, "", "", "", "")
+func (h *ReleaseHandler) InstallRelease(request *commons.InstallReleaseRequest) (*commons.ReleaseResource, error) {
+	chartPath, err := commons.LocateChartPath(request.Repo, request.Username, request.Password, request.ChartName,
+		request.ChartVersion, request.Verify, "", "", "", "")
 	if err != nil {
 		return nil, err
 	}
 
 	ns := request.Namespace
 	if ns == "" {
-		ns = "default"
+		ns = commons.DefaultNamespace()
 	}
 
-	return h.HelmClient.InstallRelease(
+	res, err := h.HelmClient.InstallRelease(
 		chartPath,
 		ns,
 		helm.ValueOverrides([]byte{}),
 		helm.ReleaseName(request.ReleaseName),
-		helm.InstallDryRun(request.DryRun))
+		helm.InstallTimeout(300),
+		helm.InstallWait(true),
+		helm.InstallDescription(request.Description))
+	if err != nil {
+		return nil, err
+	}
+	return commons.MakeReleaseResource(res.Release), nil
 }
 
 // DeleteRelease deletes an existing helm chart

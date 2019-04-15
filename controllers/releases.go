@@ -2,9 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
-	"github.com/astaxie/beego"
 	"zig-helm/commons"
 	"zig-helm/services"
+
+	"github.com/astaxie/beego"
 )
 
 type ReleaseController struct {
@@ -15,6 +16,7 @@ type ReleaseController struct {
 // @Title List
 // @Description list all releases
 // @Success 200 {object} commons.ListResult
+// @Failure 403
 // @router / [get]
 func (r *ReleaseController) List() {
 	listResult, err := r.HelmClient.ListReleases()
@@ -34,7 +36,7 @@ func (r *ReleaseController) List() {
 // @Title Install
 // @Description install release
 // @Param	body	body 	commons.InstallReleaseRequest	true 	"body content"
-// @Success 200 {object} commons.InstallReleaseResponse
+// @Success 200 {object} 	rls.InstallReleaseResponse
 // @Failure 403
 // @router / [post]
 func (r *ReleaseController) Install() {
@@ -43,9 +45,9 @@ func (r *ReleaseController) Install() {
 	if nil != err {
 		r.CustomAbort(403, err.Error())
 	}
-	installReleaseResponse, err := r.HelmClient.InstallRelease(installReleaseRequest)
+	releaseResource, err := r.HelmClient.InstallRelease(installReleaseRequest)
 	if err == nil {
-		r.Data["json"] = installReleaseResponse
+		r.Data["json"] = releaseResource
 		r.ServeJSON()
 	} else {
 		r.CustomAbort(403, err.Error())

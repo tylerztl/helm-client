@@ -3,8 +3,6 @@ package commons
 import (
 	"errors"
 	"fmt"
-	"k8s.io/helm/pkg/proto/hapi/release"
-	"k8s.io/helm/pkg/timeconv"
 	"os"
 	"path/filepath"
 	"strings"
@@ -13,7 +11,10 @@ import (
 	"k8s.io/helm/pkg/downloader"
 	"k8s.io/helm/pkg/getter"
 	"k8s.io/helm/pkg/helm/helmpath"
+	"k8s.io/helm/pkg/kube"
+	"k8s.io/helm/pkg/proto/hapi/release"
 	"k8s.io/helm/pkg/repo"
+	"k8s.io/helm/pkg/timeconv"
 )
 
 // define the helper functions
@@ -89,6 +90,7 @@ certFile, keyFile, caFile string) (string, error) {
 		log.Debug(fmt.Sprintf("Fetched %s to %s\n", name, filename))
 		return lname, nil
 	}
+	fmt.Println("=================", filename, err)
 
 	return filename, fmt.Errorf("failed to download %q (hint: running `helm repo update` may help)", name)
 }
@@ -210,5 +212,27 @@ func GetListResult(rels []*release.Release, next string) *ListResult {
 	return &ListResult{
 		Releases: listReleases,
 		Next:     next,
+	}
+}
+
+func DefaultNamespace() string {
+	if ns, _, err := kube.GetConfig(Settings.KubeContext, Settings.KubeConfig).Namespace(); err == nil {
+		return ns
+	}
+	return "default"
+}
+
+func MakeReleaseResource(release *release.Release) *ReleaseResource {
+	if release == nil {
+		return nil
+	}
+	return &ReleaseResource{
+		ChartName:    release.Chart.Metadata.Name,
+		ChartVersion: release.Chart.Metadata.Version,
+		ChartIcon:    release.Chart.Metadata.Icon,
+		Updated:      timeconv.String(release.Info.LastDeployed),
+		Name:         release.Name,
+		Namespace:    release.Namespace,
+		Status:       release.Info.Status.Code.String(),
 	}
 }

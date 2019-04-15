@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	_ "zig-helm/commons"
 	_ "zig-helm/routers"
 
 	"github.com/astaxie/beego"

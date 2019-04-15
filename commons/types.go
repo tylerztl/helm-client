@@ -3,11 +3,15 @@ package commons
 import "k8s.io/helm/pkg/repo"
 
 type InstallReleaseRequest struct {
-	ChartID      string
-	ChartVersion string
-	Namespace    string
-	ReleaseName  string
-	DryRun       bool
+	ReleaseName  string `json:"releaseName"`
+	ChartName    string `json:"chartName"`
+	Repo         string `json:"repo"`
+	Username     string `json:"username"`
+	Password     string `json:"password"`
+	ChartVersion string `json:"chartVersion"`
+	Namespace    string `json:"namespace"`
+	Description  string `json:"description"`
+	Verify       bool   `json:"verify"`
 }
 
 type GetReleaseRequest struct {
@@ -46,4 +50,14 @@ type ListRelease struct {
 
 type ListReposResponse struct {
 	Repo []*repo.Entry
+}
+
+type ReleaseResource struct {
+	ChartIcon    string `json:"chartIcon"`
+	ChartName    string `json:"chartName"`
+	ChartVersion string `json:"chartVersion"`
+	Name         string `json:"name"`
+	Namespace    string `json:"namespace"`
+	Status       string `json:"status"`
+	Updated      string `json:"updated"`
 }

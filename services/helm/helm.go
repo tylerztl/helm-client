@@ -37,27 +37,26 @@ func GetClient() helm.Interface {
 }
 
 func setupConnection() error {
-	settings := commons.GetConfig()
 	tillerHost := os.Getenv(envTillerHost)
-	settings.TillerHost = tillerHost
+	commons.Settings.TillerHost = tillerHost
 
-	if settings.TillerHost == "" {
-		config, client, err := getKubeClient(settings.KubeContext, settings.KubeConfig)
+	if commons.Settings.TillerHost == "" {
+		config, client, err := getKubeClient(commons.Settings.KubeContext, commons.Settings.KubeConfig)
 		if err != nil {
 			return err
 		}
 
-		tillerTunnel, err := portforwarder.New(settings.TillerNamespace, client, config)
+		tillerTunnel, err := portforwarder.New(commons.Settings.TillerNamespace, client, config)
 		if err != nil {
 			return err
 		}
 
-		settings.TillerHost = fmt.Sprintf("127.0.0.1:%d", tillerTunnel.Local)
+		commons.Settings.TillerHost = fmt.Sprintf("127.0.0.1:%d", tillerTunnel.Local)
 		fmt.Printf("Created tunnel using local port: '%d'\n", tillerTunnel.Local)
 	}
 
 	// Set up the gRPC config.
-	fmt.Printf("SERVER: %q\n", settings.TillerHost)
+	fmt.Printf("SERVER: %q\n", commons.Settings.TillerHost)
 
 	// Plugin support.
 	return nil
