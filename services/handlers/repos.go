@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"zig-helm/commons"
+	"helm-client/commons"
 
 	"k8s.io/helm/pkg/repo"
 )

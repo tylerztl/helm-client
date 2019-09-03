@@ -1,7 +1,7 @@
 package services
 
 import (
-	"zig-helm/commons"
+	"helm-client/commons"
 
 	rls "k8s.io/helm/pkg/proto/hapi/services"
 )

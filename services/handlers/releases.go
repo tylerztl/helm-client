@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"zig-helm/commons"
-	helm_client "zig-helm/services/helm"
+	"helm-client/commons"
+	helm_client "helm-client/services/helm"
 
 	"k8s.io/helm/pkg/helm"
 	"k8s.io/helm/pkg/proto/hapi/release"
@@ -79,7 +79,7 @@ func (h *ReleaseHandler) InstallRelease(request *commons.InstallReleaseRequest) 
 		helm.ValueOverrides([]byte{}),
 		helm.ReleaseName(request.ReleaseName),
 		helm.InstallTimeout(300),
-		helm.InstallWait(true),
+		helm.InstallWait(false),
 		helm.InstallDescription(request.Description))
 	if err != nil {
 		return nil, err

@@ -3,8 +3,8 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"zig-helm/commons"
-	"zig-helm/services"
+	"helm-client/commons"
+	"helm-client/services"
 
 	"github.com/astaxie/beego"
 )
@@ -62,12 +62,13 @@ func (r *RepoController) Remove() {
 // @router / [get]
 func (r *RepoController) List() {
 	listReposResponse, err := r.HelmClient.ListRepos()
-
-	repoList := make(map[string]string)
-	for _, re := range listReposResponse.Repo {
-		repoList[re.Name] = re.URL
-	}
 	if err == nil {
+		repoList := make(map[string]string)
+		if listReposResponse != nil {
+			for _, re := range listReposResponse.Repo {
+				repoList[re.Name] = re.URL
+			}
+		}
 		r.Data["json"] = repoList
 		r.ServeJSON()
 	} else {

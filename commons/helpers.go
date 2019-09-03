@@ -31,7 +31,7 @@ import (
 //
 // If 'verify' is true, this will attempt to also verify the chart.
 func LocateChartPath(repoURL, username, password, name, version string, verify bool, keyring,
-	certFile, keyFile, caFile string) (string, error) {
+certFile, keyFile, caFile string) (string, error) {
 	name = strings.TrimSpace(name)
 	version = strings.TrimSpace(version)
 	if fi, err := os.Stat(name); err == nil {
@@ -90,9 +90,8 @@ func LocateChartPath(repoURL, username, password, name, version string, verify b
 		log.Debug(fmt.Sprintf("Fetched %s to %s\n", name, filename))
 		return lname, nil
 	}
-	fmt.Println("=================", filename, err)
 
-	return filename, fmt.Errorf("failed to download %q (hint: running `helm repo update` may help)", name)
+	return filename, fmt.Errorf("failed to download %q due to %v (hint: running `helm repo update` may help)", name, err)
 }
 
 func AddRepository(name, url, username, password string, home helmpath.Home, certFile, keyFile, caFile string, noUpdate bool) error {
@@ -149,7 +148,7 @@ func RemoveRepoLine(name string, home helmpath.Home) error {
 		return err
 	}
 
-	fmt.Printf("%q has been removed from your repositories\n", name)
+	log.Debug(fmt.Sprintf("%q has been removed from your repositories", name))
 
 	return nil
 }

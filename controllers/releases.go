@@ -3,8 +3,8 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"zig-helm/commons"
-	"zig-helm/services"
+	"helm-client/commons"
+	"helm-client/services"
 
 	"github.com/astaxie/beego"
 )

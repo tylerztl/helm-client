@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/zig-helm.iml" filepath="$PROJECT_DIR$/.idea/zig-helm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/helm-client.iml" filepath="$PROJECT_DIR$/.idea/helm-client.iml" />
     </modules>
   </component>
 </project>

@@ -1,12 +1,12 @@
 package test
 
 import (
+	_ "helm-client/routers"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
 	"runtime"
 	"testing"
-	_ "zig-helm/routers"
 
 	"github.com/astaxie/beego"
 	. "github.com/smartystreets/goconvey/convey"

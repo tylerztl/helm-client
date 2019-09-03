@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"zig-helm/models"
+	"helm-client/models"
 
 	"github.com/astaxie/beego"
 )

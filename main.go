@@ -2,8 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	_ "zig-helm/commons"
-	_ "zig-helm/routers"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"helm-client/commons"
+	_ "helm-client/routers"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -16,7 +20,24 @@ func init() {
 
 func initLogger() {
 	config := make(map[string]interface{})
-	config["filename"] = beego.AppConfig.String("logPath")
+	logPath := beego.AppConfig.String("logPath")
+	if logPath == "" {
+		logPath = commons.GetConfig().Home.Path("logs")
+	}
+	if fi, err := os.Stat(logPath); err != nil {
+		if err := os.MkdirAll(logPath, 0755); err != nil {
+			panic("Invalid log path")
+		}
+	} else if !fi.IsDir() {
+		panic(fmt.Sprintf("%s must be a directory", logPath))
+	}
+	logFile := filepath.Join(logPath, "helm-client.log")
+	if _, err := os.Stat(logFile); err != nil {
+		if err = ioutil.WriteFile(logFile, nil, 0644); err != nil {
+			panic(err)
+		}
+	}
+	config["filename"] = logFile
 	logLevel, err := beego.AppConfig.Int("logLevel")
 	if nil != err {
 		logLevel = beego.LevelDebug
