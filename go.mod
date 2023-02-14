@@ -24,7 +24,7 @@ require (
 	github.com/go-openapi/spec v0.19.0 // indirect
 	github.com/go-openapi/swag v0.19.0 // indirect
 	github.com/gobwas/glob v0.0.0-20181002190808-e7a84e9525fe // indirect
-	github.com/gogo/protobuf v1.2.1 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20190129154638-5b532d6fd5ef // indirect
 	github.com/google/btree v0.0.0-20190326150332-20236160a414 // indirect
 	github.com/google/gofuzz v1.0.0 // indirect
@@ -50,11 +50,7 @@ require (
 	github.com/spf13/pflag v1.0.3
 	github.com/stretchr/testify v1.3.0 // indirect
 	github.com/xlab/handysort v0.0.0-20150421192137-fb3537ed64a1 // indirect
-	golang.org/x/crypto v0.0.0-20190411191339-88737f569e3a // indirect
-	golang.org/x/net v0.0.0-20190415214537-1da14a5a36f2 // indirect
 	golang.org/x/oauth2 v0.0.0-20190402181905-9f3314589c9a // indirect
-	golang.org/x/sync v0.0.0-20190412183630-56d357773e84 // indirect
-	golang.org/x/sys v0.0.0-20190416152802-12500544f89f // indirect
 	golang.org/x/time v0.0.0-20190308202827-9d24e82272b4 // indirect
 	google.golang.org/genproto v0.0.0-20190404172233-64821d5d2107 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
