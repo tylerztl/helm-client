@@ -14,7 +14,7 @@ require (
 	github.com/chai2010/gettext-go v0.0.0-20170215093142-bf70f2a70fb1 // indirect
 	github.com/cyphar/filepath-securejoin v0.0.0-20190205144030-7efe413b52e1 // indirect
 	github.com/dgrijalva/jwt-go v0.0.0-20180921172315-3af4c746e1c2 // indirect
-	github.com/docker/distribution v0.0.0-20190305004208-6d62eb1d4a35 // indirect
+	github.com/docker/distribution v2.8.0+incompatible // indirect
 	github.com/docker/spdystream v0.0.0-20181023171402-6480d4af844c // indirect
 	github.com/elazarl/goproxy v0.0.0-20190410145444-c548f45dcf1d // indirect
 	github.com/elazarl/goproxy/ext v0.0.0-20190410145444-c548f45dcf1d // indirect
